@@ -149,7 +149,6 @@ export default {
       }
     },
     value(val){
-        console.log('val',val)
         this.$emit('handleChange', {
         key:this.itemProps.bindKey,
         value: val
@@ -161,7 +160,6 @@ export default {
       this.value = data
     },
     blur(){
-      console.log('==',this.value)
       this.$emit('handleChange', {
         key:this.itemProps.bindKey,
         value: this.value

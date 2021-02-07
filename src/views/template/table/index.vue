@@ -39,7 +39,7 @@ export default {
       state.tableData =  await httpRequest("GET", API.list).then((res) => res)
       store.commit("save", { loading: false })
     }
-    onMounted(async () => {
+    onMounted(() => {
       getList()
     })
     return {

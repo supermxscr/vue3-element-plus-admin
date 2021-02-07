@@ -1,17 +1,16 @@
 <template>
   <div class="form">
     <el-form
-      v-if="formInit.length > 0"
-      :model="ruleForm"
+      :model="state.ruleForm"
       status-icon
-      ref="ruleForm"
+      ref="box"
       label-width="100px"
       class="demo-ruleForm"
       style="width:50%"
-      :rules="rules"
+      :rules="state.rules"
     >
       <el-form-item
-        v-for="item in formInit"
+        v-for="item in state.formInit"
         :key="item"
         v-bind="item"
         :rules="item.rules"
@@ -45,42 +44,37 @@ import MForm from "@/components/m-form/index.vue";
 import { formInit, ruleForm, formCopy } from "./form";
 import { httpRequest } from "@/api/http";
 import API from "@/api/api-config.js";
-import { rules } from "./rules"
+import { rules } from "./rules";
+import { useStore } from "vuex";
+import { reactive, ref } from "vue";
 export default {
   components: { MForm },
-  data() {
-    return {
-      ruleForm: ruleForm,
+  setup() {
+    let store = useStore();
+    store.commit("save", { loading: false });
+    let state = reactive({
       formInit: formInit,
+      ruleForm: ruleForm,
+      rules: rules,
       restFlag: false,
-      rules:rules
-    };
-  },
-  created() {
-    this.$store.commit("save", { loading: false });
-    this.setSelectData();
-  },
-  methods: {
-    handleChange(data) {
-      console.log("form", data);
-      this.ruleForm[data.key] = data.value;
-      console.log("ruleForm", this.ruleForm);
-    },
-    setSelectData() {
+    });
+    function setSelectData() {
       httpRequest("GET", API.select).then((res) => {
-        console.log(res)
-        this.formInit.forEach((v) => {
+        state.formInit.forEach((v) => {
           if (v.view.bindKey == "select") {
             v.view.dataArr = res;
           }
         });
       });
-    },
-    getImgs(data) {
-      console.log(data);
-    },
-    submitForm(formName) {
-      this.$refs[formName].validate((valid) => {
+    }
+    setSelectData();
+    function handleChange(data) {
+      state.ruleForm[data.key] = data.value;
+    }
+    let box = ref(null);
+    function submitForm() {
+      console.log("box", box.value);
+      box.value.validate((valid) => {
         if (valid) {
           alert("submit!");
         } else {
@@ -88,12 +82,18 @@ export default {
           return false;
         }
       });
-    },
-    resetForm() {
-      this.ruleForm = formCopy
-      console.log(formCopy,this.formInit)
-      this.restFlag = true
-    },
+    }
+    function resetForm() {
+      state.ruleForm = formCopy;
+      state.restFlag = true;
+    }
+    return {
+      state,
+      handleChange,
+      submitForm,
+      resetForm,
+      box,
+    };
   },
 };
 </script>
@@ -103,5 +103,4 @@ export default {
   background: #fff;
   padding: 30px 0;
 }
-  
 </style>
