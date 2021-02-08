@@ -95,7 +95,7 @@ export default {
       }
     },
     handleRemove(file) {
-      console.log(file)
+      // console.log(file)
       this.imageUrl.forEach((v, index) => {
         if (v == file.response.data) {
           this.imageUrl.splice(index, 1);
@@ -109,7 +109,7 @@ export default {
       this.imageUrl.push(this.dialogImageUrl);
     },
     handleSuccess(res) {
-      console.log(res)
+      // console.log(res)
       if(this.type == 'single'){
         this.imageUrl = res.data
       }else {

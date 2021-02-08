@@ -39,7 +39,7 @@ const routes = [{
     path: '/about',
     component: layout,
     meta: {
-      title: 'template',
+      title: 'about',
       icon: 'el-icon-office-building',
     },
     children: [
@@ -52,7 +52,29 @@ const routes = [{
         },
         closeable: true,
         tagType: randomTagType(),
-        component: () => import('@/views/about/about.vue')
+        component: () => import('@/views/about/index.vue')
+      }
+    ]
+  },
+  {
+    path: '/member-center',
+    component: layout,
+    meta: {
+      title: 'memberCenter',
+      icon: 'el-icon-office-building',
+    },
+    hidden:true,
+    children: [
+      {
+        path: '/member-center',
+        name: 'memberCenter',
+        meta: {
+          title: '个人中心',
+          icon: 'el-icon-office-building'
+        },
+        closeable: true,
+        tagType: randomTagType(),
+        component: () => import('@/views/member-center/index.vue')
       }
     ]
   },

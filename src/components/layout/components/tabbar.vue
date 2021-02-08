@@ -30,11 +30,9 @@ export default {
     }
   },
   created(){
-    console.log('this.$router.options.routes',this.$router.options.routes)
     this.$router.options.routes.forEach((v) => {
       if(v.children){
         v.children.forEach( i => {
-          console.log(i.path,i.closeable)
           if (!i.closeable) {
             this.$store.commit('setTagsViews',i)
           }

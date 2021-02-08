@@ -5,7 +5,7 @@
       @click="rotate"
     />
     <div class="username">
-      {{ username }}
+      {{ state.username }}
     </div>
     <el-dropdown
       class="dropdown"
@@ -15,7 +15,7 @@
           :underline="false"
           disabled
         >
-          {{ username }}
+          {{ state.username }}
           <i class="el-icon-arrow-down el-icon--right" />
         </el-link>
       </span>
@@ -23,7 +23,7 @@
         <el-dropdown-menu>
           <el-dropdown-item
             icon="el-icon-user"
-            @click="jumpPage('/center')"
+            @click="jumpPage('/member-center')"
           >
             个人中心
           </el-dropdown-item>
@@ -38,29 +38,40 @@
     </el-dropdown>
     <img
       class="avatar"
-      :src="avatar"
+      :src="require(`@/static/images/avatar/${state.avatar}.png`)"
       fit="cover"
+      @click="jumpPage('/member-center')"
     >
   </div>
 </template>
 
 <script>
 import { routerPush } from '@/utils'
+import { useStore } from "vuex";
+import { reactive } from 'vue';
 export default {
   name: 'Header',
-  components:{
-    
+  setup(){
+    const store = useStore()
+    let state = reactive({
+      avatar: store.state.avatar,
+      username: store.state.username
+    }) 
+    return {
+      state
+    }
   },
   data(){
     return {
       isCollapse: this.$store.state.navMenuCollapse,
-      avatar: this.$store.state.avatar,
-      username: this.$store.state.username
     }
   },
   watch:{
     '$store.state.navMenuCollapse'(val) {
       this.isCollapse = val
+    },
+    '$store.state.avatar'(val) {
+      this.state.avatar = val
     }
   },
   methods:{
@@ -109,6 +120,8 @@ export default {
     .avatar {
       width: 45px;
       border-radius: 50%;
+      cursor: pointer;
+      background: #fff;
     }
     .el-dropdown-link {
       cursor: pointer;

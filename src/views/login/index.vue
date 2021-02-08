@@ -84,6 +84,11 @@ export default {
         if (valid) {
           this.$store.commit('save',this.login)
           sessionStorage.setItem('isLogin', true)
+          if(localStorage.getItem('avatar') != undefined || localStorage.getItem('avatar') != null){
+            this.$store.commit('save',{
+              avatar: localStorage.getItem('avatar')
+            })
+          }
           this.loading = true
           this.$router.push({ path: "/home" })
           this.loading = false

@@ -4,8 +4,8 @@
       <el-table
         :data="tableData.data"
         stripe
-        :height="height"
-        :max-height="height"
+        :height="state.height"
+        :max-height="state.height"
         empty-text="暂无数据"
         size="mini"
         fit
@@ -36,6 +36,7 @@
   </div>
 </template>
 <script>
+import { reactive } from 'vue'
 export default {
   props:{
     tableData:{
@@ -60,12 +61,14 @@ export default {
     },
   },
   setup(props,context){
-    let height = window.innerHeight - 300
+    let state = reactive({
+      height: window.innerHeight - 300
+    })
     function pagination(data){
       context.emit('pagination',data)
     }
     return {
-      pagination, height
+      pagination, state
     }
   }
 }

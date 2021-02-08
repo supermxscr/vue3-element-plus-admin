@@ -30,7 +30,6 @@ const rules = {
   select: [{
     required: true,
     validator: (rule, val, cb) => {
-      console.log('validator-select', val)
       if (val.length == 0) {
         cb(new Error('不能为空'))
       } else {

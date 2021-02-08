@@ -18,7 +18,7 @@
         <M-Form
           @handleChange="handleChange"
           :item-props="item.view"
-          :rest="restFlag"
+          :rest="state.restFlag"
         />
       </el-form-item>
       <el-form-item>
@@ -73,12 +73,10 @@ export default {
     }
     let box = ref(null);
     function submitForm() {
-      console.log("box", box.value);
       box.value.validate((valid) => {
         if (valid) {
           alert("submit!");
         } else {
-          console.log("error submit!!");
           return false;
         }
       });

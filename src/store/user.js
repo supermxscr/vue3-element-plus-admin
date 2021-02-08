@@ -2,12 +2,13 @@ import { createStore } from 'vuex'
 
 export default createStore({
   state: {
-    
+    avatar: '30',
+    username: null,
   },
   mutations: {
-    setNavMenuCollapse(state){
-      state.navMenuCollapse = !state.navMenuCollapse
-    }
+    save(state,val){
+      Object.assign(state, val)
+    },
   },
   actions: {
   },

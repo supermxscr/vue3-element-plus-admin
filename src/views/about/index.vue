@@ -8,6 +8,7 @@
     <p>图片上传组件 单个 多个 ===> ok</p>
     <p>富文本 ====>ok</p>
     <p>echarts  ====>ok</p>
+    <p>天气组件</p>
   </div>
 </template>
 

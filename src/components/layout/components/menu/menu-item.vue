@@ -85,7 +85,6 @@ export default {
   },
   methods: {
     handleItem(route){
-      console.log(route)
       if (route.children){
         routerPush(route.children[0].path)
         this.$store.commit('setTagsViews',route.children[0])

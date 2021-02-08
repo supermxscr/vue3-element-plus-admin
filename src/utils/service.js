@@ -4,7 +4,6 @@ import { customRef } from 'vue';
 
 function getList (url,cb){
   httpRequest("GET", url).then((res) => {
-    console.log(res)
     cb && cb(res)
   })
 }
