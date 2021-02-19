@@ -6,96 +6,68 @@
       fit="cover"
     >
     <h2>登录1</h2>
-    <div class="loginBox">
-      <el-form
-        ref="loginForm"
-        :model="login"
-        size="mini"
-      >
-        <el-form-item
-          prop="username"
-          :rules="rules.username"
-        >
-          <el-input
-            v-model="login.username"
-            placeholder="请输入用户名"
-            prefix-icon="el-icon-user"
-          />
-        </el-form-item>
-        <el-form-item 
-          prop="password" 
-          :rules="rules.password"
-        >
-          <el-input
-            v-model="login.password"
-            placeholder="请输入密码"
-            :type="type"
-            prefix-icon="el-icon-lock"
-            @keyup.enter="handleLogin"
-          />
-          <i
-            :class="'iconfont ' + typeClass"
-            @click="showPwd"
-          />
-        </el-form-item>
-        <el-button
-          :loading="loading"
-          type="primary"
-          @click.prevent="handleLogin"
-          plain
-          round
-          size="mini"
-        >
-          登录
-        </el-button>
-      </el-form>
-    </div>
+    <m-login />
   </div>
 </template>
 
 <script>
+import { onMounted, reactive, ref } from 'vue'
 import rules from './rules'
+import { useRouter } from "vue-router"
+import { useStore } from "vuex"
+import mLogin from "./login"
+
 export default {
   name: "Login",
-  data() {
-    return {
-      login: {
+  components:{
+    mLogin
+  },
+  setup(){
+    let store = useStore()
+    let router = useRouter()
+    let state = reactive({
+      login:{
         username: "周柏豪",
         password: "123456"
       },
       type: 'password',
       typeClass: 'iconview',
       loading: false,
-      rules:rules
-    }
-  },
-  methods: {
-    showPwd(){
-      if(this.type == 'password'){
-        this.typeClass = 'iconview_off'
-        this.type = 'text'
+      rules: rules
+    })
+    function showPwd(){
+      if(state.type == 'password'){
+        state.typeClass = 'iconview_off'
+        state.type = 'text'
       }else {
-        this.typeClass = 'iconview'
-        this.type = 'password'
+        state.typeClass = 'iconview'
+        state.type = 'password'
       }
-    },
-    handleLogin() {
-      this.$refs.loginForm.validate((valid) => {
+    }
+    let loginForm = ref(null);
+    onMounted(()=>{
+      console.log(loginForm)
+    })
+    function handleLogin() {
+      loginForm.value.validate((valid) => {
         if (valid) {
-          this.$store.commit('save',this.login)
+          store.commit('save',state.login)
           sessionStorage.setItem('isLogin', true)
           if(localStorage.getItem('avatar') != undefined || localStorage.getItem('avatar') != null){
-            this.$store.commit('save',{
+            store.commit('save',{
               avatar: localStorage.getItem('avatar')
             })
           }
-          this.loading = true
-          this.$router.push({ path: "/home" })
-          this.loading = false
+          state.loading = true
+          router.push({ path: "/home" })
+          state.loading = false
         } else {
           return false
         }
-      })
+    })
+    }
+    return {
+      state, showPwd, handleLogin, loginForm
     }
   }
 }
@@ -136,6 +108,29 @@ export default {
   .iconfont {
     position: absolute;
     right: 10px;
+  }
+  .info {
+    text-align: left;
+    font-size: 12px;
+    color: #fff;
+    cursor: pointer;
+    margin-top: -10px;
+    .reg {
+      text-align: right;
+      display: inline-block;
+      // width: 83%;
+      width: 100%;
+      text-decoration: underline;
+    }
+    .hover {
+      text-decoration: underline;
+    }
+  }
+  .reg:hover {
+    color: #409eff;
+  }
+  .hover:hover {
+    color: #409eff;
   }
 }
 </style>

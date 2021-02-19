@@ -1,10 +1,9 @@
 import axios from 'axios'
 import { ElMessage } from 'element-plus';
 const service = axios.create({
-  baseURL: process.env.BASE_API,
+  baseURL: '/api/',
   timeout: 5000,
   headers: {
-    Accept: 'application/json'
   }
 })
 service.interceptors.response.use(

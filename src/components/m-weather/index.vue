@@ -17,7 +17,7 @@
       >
       <span class="now-tem">{{ state.weather.tem }}℃</span>
    
-      <span class="wea">{{ state.weather.wea }} {{ state.weather.tem1 }}℃ ~ {{ state.weather.tem2 }}℃</span>
+      <span class="wea">{{ state.weather.wea }} {{ state.weather.tem2 }}℃ ~ {{ state.weather.tem1 }}℃</span>
       <img
         :src="require(`@/static/images/weather/${state.weather.wea_img}.png`)"
         class="temperature"
@@ -51,21 +51,21 @@
           src="@/static/images/weather/nengjiandu.png"
           class="info-icon"
         >
-        <span class="label">能见度: {{ state.weather.visibility }}</span>
+        <span class="label">能见度 {{ state.weather.visibility }}</span>
       </div>
       <div class="info">
         <img
           src="@/static/images/weather/daqiya.png"
           class="info-icon"
         >
-        <span class="label">气压: {{ state.weather.pressure }}hPa</span>
+        <span class="label">气压 {{ state.weather.pressure }}hPa</span>
       </div>
       <div class="info">
         <img
           src="@/static/images/weather/dengji.png"
           class="info-icon"
         >
-        <span class="label">空气等级{{ state.weather.air_level }}</span>
+        <span class="label">空气等级 {{ state.weather.air_level }}</span>
       </div>
     </div>
   </div>
@@ -82,13 +82,15 @@ export default {
       weather7Day:{}
     })
     async function getWeatherData(){
-      state.weather = await httpRequest("GET", API.weather).then((res) => res)
-      state.weather7Day = await httpRequest("GET", API.weather7Day).then((res) => res)
+      // if(!state.weather){
+        state.weather = await httpRequest("GET", API.weather).then((res) => res)
+      // }
+      // state.weather7Day = await httpRequest("GET", API.weather7Day).then((res) => res)
       console.log(state.weather,state.weather7Day)
     }
     
     onMounted(async ()=>{
-      getWeatherData()
+      // getWeatherData()
     })
     return {
       state, getWeatherData

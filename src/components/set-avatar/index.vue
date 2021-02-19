@@ -24,6 +24,7 @@
             type="primary"
             size="mini"
             @click="saveAvatar"
+            :loading="state.loading"
           >嗯！就是它了~</el-button>
         </span>
       </template>
@@ -35,25 +36,38 @@
 import { reactive, watch } from 'vue'
 import { useStore } from 'vuex'
 import { ElMessage } from "element-plus";
+import { httpRequest } from "@/api/http"
+import API from "@/api/api-config.js"
 export default {
   setup(props,context){
     let store = useStore()
     let state = reactive({
       isShow: false,
       avatarList:[],
-      chooseIndex: store.state.avatar
+      chooseIndex: store.state.userInfo.avatar,
+      loading: false
     })
     function show(flag){
       state.isShow = flag
     }
     function saveAvatar(){
-      store.commit('user/save',{
-        avatar: state.chooseIndex
+      state.loading = true
+      httpRequest("PUT", API.user, {
+        id: store.state.userInfo.id,
+        avatar:state.chooseIndex
+      } ).then((res) => {
+        state.loading = false
+        if(res.code == 0){
+          store.commit('save',{
+            userInfo: res.data
+          })
+          ElMessage.success(res.message)
+          context.emit('choose',state.chooseIndex)
+          show(false)
+        }else {
+          ElMessage.error(res.message)
+        }
       })
-      ElMessage.success('修改成功~')
-      context.emit('choose',state.chooseIndex)
-      localStorage.setItem('avatar',state.chooseIndex)
-      show(false)
     }
     function setAvatarList(){
       for( let i = 0; i < 31; i++ ){
@@ -66,7 +80,7 @@ export default {
     }
     watch(state,(val)=>{
       if (!val.isShow){
-        state.chooseIndex = store.state.avatar
+        state.chooseIndex = store.state.userInfo.avatar
       }
     })
     return {

@@ -1,7 +1,10 @@
 <template>
   <div class="member-center">
-    <div class="top">
-      <!-- :style="`width:${state.width}px`" -->
+    <div
+      class="top"
+      :style="`width:${state.width}px`"
+    >
+      <!--  -->
       <!-- height:${state.height}px; -->
       <img
         class="avatar"
@@ -21,7 +24,9 @@
       ref="avatarDom"
       @choose="chooseAvatar"
     />
-    <weather class="wearth" />
+    <m-weather class="wearth" />
+    <m-calendar />
+    <m-clock class="clock" />
   </div>
 </template>
 
@@ -30,22 +35,24 @@ import { useStore } from "vuex";
 import setAvatar from "@/components/set-avatar/index.vue";
 import { reactive, ref } from "vue";
 import { setSeyHi } from "@/utils/index.js";
-import weather from "@/components/weather/index.vue"
+import mWeather from "@/components/m-weather/index.vue"
+import mCalendar from "@/components/m-calendar/index.vue"
+import mClock from "@/components/m-clock/index.vue"
 
 export default {
   name: "MemberCenter",
   components: {
-    setAvatar, weather
+    setAvatar, mWeather, mCalendar, mClock
   },
   setup() {
     const store = useStore();
     store.commit("save", { loading: false });
     let state = reactive({
-      avatar: store.state.avatar,
-      username: store.state.username,
+      avatar: store.state.userInfo.avatar,
+      username: store.state.userInfo.username,
       seyHi: setSeyHi(),
       // height: window.innerHeight - 220,
-      width: window.innerWidth - 1200,
+      width: window.innerWidth - 740,
     })
     const avatarDom = ref(null);
     function setAvatarFn() {
@@ -66,11 +73,11 @@ export default {
 
 <style lang="less" scoped>
 .member-center {
-  padding-top: 80px;
+  padding-top: 60px;
   position: relative;
   .top {
     height: 120px;
-    width: 65%;
+    // width: 65%;
     background: #fff;
     position: relative;
     box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
@@ -104,8 +111,12 @@ export default {
   .wearth {
     position: absolute;
     right: 20px;
-    // top: 80px;
-    top: 0;
+    top: 205px;
+  }
+  .clock {
+    position: absolute;
+    right: 0;
+    top: 70px;
   }
 }
 </style>

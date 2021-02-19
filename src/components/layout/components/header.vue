@@ -54,8 +54,9 @@ export default {
   setup(){
     const store = useStore()
     let state = reactive({
-      avatar: store.state.avatar,
-      username: store.state.username
+      avatar: store.state.userInfo.avatar,
+      username: store.state.userInfo.username,
+      isCollapse: store.state.navMenuCollapse
     }) 
     return {
       state
@@ -70,8 +71,8 @@ export default {
     '$store.state.navMenuCollapse'(val) {
       this.isCollapse = val
     },
-    '$store.state.avatar'(val) {
-      this.state.avatar = val
+    '$store.state.userInfo'(val) {
+      this.state.avatar = val.avatar
     }
   },
   methods:{

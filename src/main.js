@@ -3,6 +3,8 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import ElementPlus from 'element-plus'
+import 'dayjs/locale/zh-cn'
+import locale from 'element-plus/lib/locale/lang/zh-cn'
 import 'element-plus/lib/theme-chalk/index.css'
 import Cookies from 'js-cookie'
 import  pagination from "@/components/pagination"
@@ -21,7 +23,7 @@ app.mixin({
   }
 })
 
-app.use(store).use(ElementPlus).use(router).use(Cookies).use(moment).mount('#app')
+app.use(store).use(ElementPlus, { locale }).use(router).use(Cookies).use(moment).mount('#app')
 router.beforeEach((to, from, next) => {
   if(sessionStorage.getItem('isLogin') && sessionStorage.getItem('isLogin') !== 'false'){
     if (to.path === '/'){
