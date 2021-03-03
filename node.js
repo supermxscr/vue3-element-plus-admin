@@ -29,9 +29,7 @@ var request = require('request');
 /* 引入mysql */
 const mysql = require('mysql');
 const connection = mysql.createConnection({
-	host: '122.51.234.81',
-	user: 'root',
-	password: '258369',
+
 	database: 'qin',
 	multipleStatements: true
 })
