@@ -57,7 +57,7 @@ export default {
 .flip {
   position: relative;
   margin: 5px;
-  width: 20px;
+  width: 14px;
   height: 90px;
   font-size: 80px;
   font-weight: bold;

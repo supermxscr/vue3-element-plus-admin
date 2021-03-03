@@ -1,21 +1,17 @@
 /* 引入express框架 */
 const express = require('express');
 const app = express();
-
-//设置跨域访问
-// app.all("*", function (req, res, next) {
-//     //设置允许跨域的域名，*代表允许任意域名跨域
-//     res.header("Access-Control-Allow-Origin", "*");
-//     //允许的header类型
-//     res.header("Access-Control-Allow-Headers", "content-type");
-//     //跨域允许的请求方式 
-//     res.header("Access-Control-Allow-Methods", "DELETE,PUT,POST,GET,OPTIONS");
-//     if (req.method.toLowerCase() == 'options')
-//         res.send(200); //让options尝试请求快速结束
-//     else
-//         next();
-// })
-
+app.all('*', function(req, res, next){
+  res.header('Access-Control-Allow-Origin',  '*');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Content-Length, Authorization, Accept, X-Requested-With, yourHeaderFeild');
+  res.header('Access-Control-Allow-Methods', 'PUT, POST, GET, DELETE, OPTIONS');
+  if (req.method === 'OPTIONS'){
+    res.send(200);
+  }
+  else{
+    next();
+  }
+}); 
 /* 引入cors */
 const cors = require('cors');
 app.use(cors());
@@ -25,7 +21,7 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
 	extended: false
-}));
+}))
 
 /* 引入请求三方方法 */
 var request = require('request');
@@ -33,7 +29,11 @@ var request = require('request');
 /* 引入mysql */
 const mysql = require('mysql');
 const connection = mysql.createConnection({
-
+	host: '122.51.234.81',
+	user: 'root',
+	password: '258369',
+	database: 'qin',
+	multipleStatements: true
 })
 
 connection.connect((res) => {
@@ -43,7 +43,7 @@ connection.connect((res) => {
 
 /* 监听端口 */
 app.listen(3306, () => {
-	console.log('——————————服务已启动——————————');
+	console.log('——————————服务已启动——————————')
 })
 
 const baseURL = '/api'
@@ -117,24 +117,32 @@ app.post(`${baseURL}/register`, (req, res) => {
 })
 
 // 获取用户信息
-app.get(`${baseURL}/user`, (req, res) => {
-	console.log(req.body)
+app.post(`${baseURL}/user`, (req, res) => {
 	const sqlStr = `SELECT * FROM user where id=${req.body.id}`
 	connection.query(sqlStr, (error, results) => {
 		if (error) return res.json({
 			code: 10001,
 			message: error
 		})
+		results[0].memo = JSON.parse(results[0].memo)
 		res.json({
 			code: 0,
-			data: results
+			data: results[0]
 		})
 	})
 })
 
 // 修改获取用户信息
 app.put(`${baseURL}/user`, (req, res) => {
-	const sqlStr = `update user set avatar="${req.body.avatar}" where id=${req.body.id};`
+	var str = ""
+	Object.keys(req.body).forEach(v=>{
+		if(v != 'id'){
+			str += `${v}='${req.body[v]}',`
+		}
+	})
+	str = str.substring(0, str.length - 1)
+	console.log(str)
+	const sqlStr = `update user set ${str} where id=${req.body.id};`
 	connection.query(sqlStr, (error) => {
 		if (error) {
 			res.json({
@@ -158,6 +166,23 @@ app.put(`${baseURL}/user`, (req, res) => {
 	})
 })
 
+
+// 页面权限列表
+app.post(`${baseURL}/system/pages`, (req, res) => {
+	const sqlStr = `SELECT * FROM authority`
+	connection.query(sqlStr, (error, results) => {
+		if (error) return res.json({
+			code: 10001,
+			message: error
+		})
+		results[0].memo = JSON.parse(results[0].memo)
+		res.json({
+			code: 0,
+			data: results[0]
+		})
+	})
+})
+
 // 获取三方假期数据
 app.get(`${baseURL}/holiday`, () => {
 	request('https://tianqiapi.com/api?version=v6&appid=61766418&appsecret=7IIFrTTa', function (err, response, body) {
@@ -170,64 +195,5 @@ app.get(`${baseURL}/holiday`, () => {
 				message: '成功'
 			})
 		}
-	})
-})
-app.get(`${baseURL}/get`, (req, res) => {
-	const sqlStr = 'SELECT * FROM todo'
-	connection.query(sqlStr, (error, results) => {
-		if (error) return res.json({
-			code: 10001,
-			message: error
-		})
-		res.json({
-			code: 0,
-			data: results
-		})
-	})
-})
-app.get(`${baseURL}/set`, (req, res) => {
-	connection.query("INSERT INTO todo SET ?", req.query, (error, results, fields) => {
-		if (error) throw error;
-		res.json({
-			code: 0,
-			message: '成功'
-		})
-	})
-})
-app.post(`${baseURL}/postSet`, (req, res) => {
-	connection.query("INSERT INTO todo SET ?", req.body, (error, results, fields) => {
-		if (error) throw error;
-		res.json({
-			code: 0,
-			message: '成功'
-		})
-	})
-})
-app.get(`${baseURL}/getById`, (req, res) => {
-	connection.query(`SELECT * FROM todo where id=${req.query.id}`, (error, results, fields) => {
-		if (error) throw error;
-		res.json({
-			code: 0,
-			message: results
-		})
-	})
-})
-
-app.get(`${baseURL}/del`, (req, res) => {
-	connection.query(`delete FROM todo where id=${req.query.id}`, (error, results, fields) => {
-		if (error) throw error;
-		res.json({
-			code: 0,
-			message: results
-		})
-	})
-})
-app.post(`${baseURL}/update`, (req, res) => {
-	connection.query(`update todo set name="${req.body.name}" where id=${req.body.id};`, (error, results, fields) => {
-		if (error) throw error;
-		res.json({
-			code: 0,
-			message: results
-		})
 	})
 })

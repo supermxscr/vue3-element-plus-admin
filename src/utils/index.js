@@ -71,3 +71,35 @@ export function getTimeArr(now = new Date()) {
 function toArr(n) {
   return n >= 10 ? ('' + n).split('').map(item => Number(item)) : [0, n]
 }
+
+/**
+ * @description: 转json 字符串
+ */
+
+export function toJSON(data, flag){
+  let info
+  if( typeof data !== 'string' && flag == 'str'){
+    info = JSON.stringify(data)
+  }if( flag == 'arr'){
+    info = JSON.parse(data)
+  }else {
+    info = data
+  }
+  return info
+}
+
+/**
+ * @description: 获取 路由权限配置
+ */
+export function getRouterAccess(){
+  let arr = []
+  router.options.routes.forEach( v => {
+    if(v.children){
+      v.children.forEach( i => {
+        if (i.access) arr.push(i.access)
+      })
+    }
+  })
+  return arr
+}
+

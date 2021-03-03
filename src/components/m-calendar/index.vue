@@ -1,40 +1,81 @@
 <template>
   <div
     class="calendar"
-    :style="`width:${state.width}px`"
   >
     <el-calendar>
-      <template #dateCell="{data}">
-        <p :class="data.isSelected ? 'is-selected' : ''">
-          {{ data.day.split('-').slice(1).join('-') }} {{ data.isSelected ? '✔️' : '' }}
-        </p>
+      <template
+        #dateCell="{data}"
+      >
+        <div>
+          <div
+            class="calendar-day"
+            @dblclick="setMemoFn(data.day)"
+          >
+            {{ data.day.split('-').slice(1).join('-') }}
+          </div>
+          <div
+            v-for="(item, index) in state.userInfo.memo"
+            :key="index"
+            class="btn"
+          >
+            <el-tooltip
+              v-if="data.day == item.date"
+              class="item"
+              :content="item.decs"
+              placement="top"
+            >
+              <div @dblclick="setMemoFn(data.day)">
+                {{ item.decs }}
+              </div>
+            </el-tooltip>
+          </div>
+        </div>
       </template>
     </el-calendar>
+    <set-memo
+      ref="memoDom"
+    />
   </div>
 </template>
 
 <script>
-import { onMounted, reactive } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import {httpRequest} from "@/api/http.js"
-import API from "@/api/api-config.js";
+import API from "@/api/api-config.js"
+import { ElMessage } from "element-plus"
+import setMemo from "./set-memo"
+import { useStore } from "vuex";
+
 export default {
+  components:{ setMemo },
   setup(){
+    const store = useStore();
     let state = reactive({
-      width: window.innerWidth - 740,
+      userInfo: {
+        memo:[]
+      },
+      setDate: null
     })
+    const memoDom = ref(null);
     async function getWeatherData(){
-      // if(!state.weather){
-        state.weather = await httpRequest("GET", API.weather).then((res) => res)
-      // }
-      // state.weather7Day = await httpRequest("GET", API.weather7Day).then((res) => res)
+      state.weather = await httpRequest("GET", API.weather).then((res) => res)
       console.log(state.weather,state.weather7Day)
     }
+    async function getUserInfo(){
+      state.userInfo = await httpRequest("POST", API.user , {id:store.state.userInfo.id}).then( (res) => res.data)
+      console.log(state.userInfo)
+    }
     
-    onMounted(async ()=>{
+    function setMemoFn(day) {
+      ElMessage(day)
+      memoDom.value.show(true,day);
+    }
+    onMounted(()=>{
       // getWeatherData()
+      getUserInfo()
     })
     return {
-      state, getWeatherData
+      state, getWeatherData, setMemoFn, memoDom, getUserInfo
     }
   }
 }
@@ -42,11 +83,21 @@ export default {
 
 <style lang="less" scoped>
   .calendar {
-    width: 65%;
+    width: 98%;
     display: inline-block;
     margin-top: 20px;
     .is-selected {
       color: #1989FA;
+    }
+    .btn {
+      margin-top: 5px;
+      overflow: hidden;
+      display:-webkit-box;
+      -webkit-box-orient:vertical;
+      -webkit-line-clamp:2;//控制行数
+    }
+    .item {
+      margin: 4px;
     }
     .el-calendar {
       background: #fff;

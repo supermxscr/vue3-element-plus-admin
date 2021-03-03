@@ -7,7 +7,7 @@
       border	        是否显示边框	       boolean                     默认false
     -->
     <el-radio-group
-      v-model="value"
+      v-model="state.value"
       v-if="itemProps.type == 'radio'"
     >
       <el-radio
@@ -40,7 +40,7 @@
     <el-input
       size="mini"
       v-if="itemProps.type == 'input' || itemProps.type == 'textarea'"
-      v-model="value"
+      v-model="state.value"
       v-bind="itemProps"
       @clear="blur"
       :key="itemProps.type"
@@ -61,7 +61,7 @@
     <el-input-number
       size="mini"
       v-if="itemProps.type=='input-number'"
-      v-model="value"
+      v-model="state.value"
       v-bind="itemProps"
       :style="itemProps.style?itemProps.style:'width:100%'"
       :placeholder="itemProps.placeholder ? itemProps.placeholder : '请输入'"
@@ -88,7 +88,7 @@
       default-first-option	在输入框按下回车，选择第一个匹配项。需配合 filterable 或 remote 使用	boolean 默认 false
      -->
     <el-select 
-      v-model="value"
+      v-model="state.value"
       v-if="itemProps.type == 'select'"
       size="mini"
       v-bind="itemProps"
@@ -105,7 +105,7 @@
     <!-- 富文本 -->
     <wangeditor 
       v-if="itemProps.type == 'editor'" 
-      v-model="value"
+      v-model="state.value"
     />
     <!-- 
       上传图片 / 文件 
@@ -116,10 +116,18 @@
       v-if="itemProps.type == 'multiple' || itemProps.type == 'single' || itemProps.type == 'file'" 
       v-bind="itemProps"
     />
+    <!-- 级联选择器 -->
+    <el-cascader
+      v-if="itemProps.type == 'cascader'" 
+      v-model="state.value"
+      v-bind="itemProps"
+      :style="itemProps.style?itemProps.style:'width:100%'"
+    />
   </div>
 </template>
 <script>
 import UploadImg from "@/components/upload/index.vue";
+import { reactive } from 'vue';
 export default {
   components:{ UploadImg },
   props: {
@@ -134,13 +142,20 @@ export default {
       }
     }
   },
-  data() {
-    return {
-      value: null
+  setup(props, context){
+    let state = reactive({
+      value: props.itemProps.defaultValue
+    })
+    function getImgs(data){
+      state.value = data
     }
-  },
-  mounted() {
-    this.value = this.itemProps.defaultValue
+    function blur(){
+      context.emit('handleChange', {
+        key: props.itemProps.bindKey,
+        value: state.value
+      })
+    }
+    return { state, getImgs, blur}
   },
   watch:{
     rest(val){
@@ -148,7 +163,7 @@ export default {
         this.value = this.itemProps.defaultValue
       }
     },
-    value(val){
+    'state.value'(val){
         this.$emit('handleChange', {
         key:this.itemProps.bindKey,
         value: val
@@ -156,15 +171,15 @@ export default {
     }
   },
   methods: {
-    getImgs(data){
-      this.value = data
-    },
-    blur(){
-      this.$emit('handleChange', {
-        key:this.itemProps.bindKey,
-        value: this.value
-      })
-    }
+    // getImgs(data){
+    //   this.state.value = data
+    // },
+    // blur(){
+    //   this.$emit('handleChange', {
+    //     key:this.itemProps.bindKey,
+    //     value: this.state.value
+    //   })
+    // }
   }
 }
 </script>

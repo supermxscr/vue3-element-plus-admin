@@ -1,32 +1,45 @@
 <template>
   <div class="member-center">
-    <div
-      class="top"
-      :style="`width:${state.width}px`"
-    >
-      <!--  -->
-      <!-- height:${state.height}px; -->
-      <img
-        class="avatar"
-        :src="require(`@/static/images/avatar/${state.avatar}.png`)"
-        fit="cover"
-      >
-      <span
-        class="set-avatar"
-        @click="setAvatarFn"
-      >设置头像</span>
-      <h3 class="username">
-        {{ state.seyHi }}
-        {{ state.username }}
-      </h3>
-    </div>
+    <el-row>
+      <el-col :span="16">
+        <div
+          class="top"
+        >
+          <img
+            class="avatar"
+            :src="require(`@/static/images/avatar/${state.avatar}.png`)"
+            fit="cover"
+          >
+          <span
+            class="set set-avatar"
+            @click="setAvatarFn"
+          >设置头像</span>
+          <span
+            class="set set-info"
+            @click="setAvatarFn"
+          >完善信息</span>
+          <h3 class="username">
+            {{ state.seyHi }}
+            {{ state.username }}
+          </h3>
+        </div>
+      </el-col>
+      <el-col :span="8">
+        <m-clock />
+      </el-col>
+    </el-row>
+    <el-row>
+      <el-col :span="16">
+        <m-calendar />
+      </el-col>
+      <el-col :span="8">
+        <m-weather />
+      </el-col>
+    </el-row>
     <set-avatar
       ref="avatarDom"
       @choose="chooseAvatar"
     />
-    <m-weather class="wearth" />
-    <m-calendar />
-    <m-clock class="clock" />
   </div>
 </template>
 
@@ -77,7 +90,7 @@ export default {
   position: relative;
   .top {
     height: 120px;
-    // width: 65%;
+    width: 98%;
     background: #fff;
     position: relative;
     box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
@@ -96,27 +109,25 @@ export default {
       top: -40px;
       box-shadow: 0 0 0 5px #fff;
     }
-    .set-avatar {
+    .set {
       position: absolute;
       left: 54px;
-      top: 55px;
       font-size: 12px;
       color: #999;
       cursor: pointer;
     }
+    .set-avatar {
+      top: 55px;
+    }
+    .set-info {
+      top: 76px;
+    }
     .set-avatar:hover {
       color: #409eff;
     }
-  }
-  .wearth {
-    position: absolute;
-    right: 20px;
-    top: 205px;
-  }
-  .clock {
-    position: absolute;
-    right: 0;
-    top: 70px;
+    .set-info:hover {
+      color: #409eff;
+    }
   }
 }
 </style>

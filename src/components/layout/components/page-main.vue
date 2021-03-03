@@ -1,14 +1,14 @@
 <template>
   <div class="page-main">
     <router-view v-slot="{ Component }">
-      <keep-alive include="home">
+      <!-- <keep-alive include="home"> -->
         <transition
           name="fade-transform"
           mode="out-in"
         >
           <component :is="Component" />
         </transition>
-      </keep-alive>
+      <!-- </keep-alive> -->
     </router-view>
     <div
       class="loading-box"

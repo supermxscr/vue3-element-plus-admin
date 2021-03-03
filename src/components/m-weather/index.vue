@@ -107,6 +107,7 @@ export default {
     padding: 20px;
     width: 400px;
     display: inline-block;
+    margin-top: 20px;
     .top {
       margin: 0 auto;
       width: 333px;

@@ -8,7 +8,10 @@ const API = {
   select: 'select',
   login: 'login',
   register: 'register',
-  user: 'user'
+  user: 'user',
+  access: 'access',
+  systemUser: 'system/user',
+  systemPages: 'system/pages',
 }
 
 export default API

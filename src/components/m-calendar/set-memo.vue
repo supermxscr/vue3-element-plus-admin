@@ -1,18 +1,19 @@
 <template>
-  <div class="avatar-dialog">
+  <div class="memo-dialog">
     <el-dialog
-      title="选一个喜欢的吧~"
+      title="记录一下备忘录吧~"
       v-model="state.isShow"
     >
       <div>
-        <img
-          v-for="(item,index) in state.avatarList"
-          :key="item"
-          :class="state.chooseIndex == index? 'avatar-item active' : 'avatar-item'"
-          :src="require(`@/static/images/avatar/${index}.png`)"
-          fit="cover"
-          @click="chooseAvatar(index)"
-        >
+        <p class="date">
+          时间： {{ state.date }}
+        </p>
+        <el-input
+          v-model="state.decs"
+          type="textarea"
+          :autosize="{ minRows: 4}"
+          placeholder="请输入内容吧~"
+        />
       </div>
       <template #footer>
         <span>
@@ -25,7 +26,7 @@
             size="mini"
             @click="saveAvatar"
             :loading="state.loading"
-          >嗯！就是它了~</el-button>
+          >保存~</el-button>
         </span>
       </template>
     </el-dialog>
@@ -43,66 +44,70 @@ export default {
     let store = useStore()
     let state = reactive({
       isShow: false,
-      avatarList:[],
-      chooseIndex: store.state.userInfo.avatar,
-      loading: false
+      loading: false,
+      date: '',
+      decs: ''
     })
-    function show(flag){
+    function show(flag,date){
+      state.date = date
       state.isShow = flag
     }
     function saveAvatar(){
       state.loading = true
+      if(store.state.userInfo.memo){
+        store.state.userInfo.memo.forEach(v => {
+          if(v.date == state.date){
+            v.decs = state.decs
+          }else {
+            store.state.userInfo.memo.push({
+              "date": state.date,
+              "decs": state.decs
+            })
+          }
+        })
+      }else {
+        store.state.userInfo.memo = []
+        store.state.userInfo.memo.push({
+          "date": state.date,
+          "decs": state.decs
+        })
+      }
       httpRequest("PUT", API.user, {
         id: store.state.userInfo.id,
-        avatar:state.chooseIndex
+        memo: store.state.userInfo.memo
       } ).then((res) => {
+        state.loading = false
         if(res.code == 0){
-          store.commit('save',{
-            userInfo: res.data
-          })
           ElMessage.success(res.message)
           context.emit('choose',state.chooseIndex)
           show(false)
         }else {
           ElMessage.error(res.message)
         }
-        state.loading = false
       })
     }
-    function setAvatarList(){
-      for( let i = 0; i < 31; i++ ){
-        state.avatarList.push(i)
-      }
-    }
-    setAvatarList()
-    function chooseAvatar(index) {
-      state.chooseIndex = index
-    }
     watch(state,(val)=>{
-      if (!val.isShow){
-        state.chooseIndex = store.state.userInfo.avatar
+      if(!val.isShow){
+        state.date = ''
+        state.decs = ''
+        state.loading = false
       }
     })
+
     return {
-      state, show, saveAvatar, setAvatarList, chooseAvatar
+      state, show, saveAvatar,
     }
   }
 }
 </script>
 
 <style lang="less">
-.avatar-dialog {
-  .avatar-item {
-    width: 50px;
-    border-radius: 50%;
-    margin: 10px;
-    box-shadow: 2px 2px 4px 1px #ccc;
-  }
-  .avatar-item:hover {
-    transform: scale(1.3)
-  }
-  .active {
-    box-shadow:  0px 0px 5px 4px #f00;
+.memo-dialog {
+  .date {
+    margin-top: 0;
+    font-size: 15px;
+    font-weight: bold;
+    color: #000;
   }
   .el-dialog__footer {
     text-align: center !important;

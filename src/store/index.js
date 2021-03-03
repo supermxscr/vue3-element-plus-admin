@@ -6,7 +6,8 @@ export default createStore({
     tagsViews:[],
     activeMenu: '',
     loading: false,
-    userInfo: {}
+    userInfo: {},
+    access:[]
   },
   mutations: {
     save(state,val){

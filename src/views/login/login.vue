@@ -140,7 +140,8 @@ export default {
           store.commit('save',{
             avatar: res.data.avatar
           })
-          router.push({ path: "/home" })
+          getUserAccess()
+          
         }else {
           ElMessage.error(res.message)
         }
@@ -151,6 +152,14 @@ export default {
     function register() {
       state.isRegister = !state.isRegister
       // state.login = {}
+    }
+    async function getUserAccess(){
+      let access = null
+      access = await httpRequest("GET", API.access).then((res) => res.data)
+      store.commit('save', {
+        'access': access
+      })
+      router.push({ path: "/home" })
     }
     return {
       state, showPwd, handleLogin, loginForm, login, register

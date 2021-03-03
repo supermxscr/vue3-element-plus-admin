@@ -57,21 +57,21 @@ export default {
       ruleForm: ruleForm,
       rules: rules,
       restFlag: false,
-    });
+    })
     function setSelectData() {
       httpRequest("GET", API.select).then((res) => {
         state.formInit.forEach((v) => {
           if (v.view.bindKey == "select") {
             v.view.dataArr = res;
           }
-        });
-      });
+        })
+      })
     }
-    setSelectData();
+    setSelectData()
     function handleChange(data) {
       state.ruleForm[data.key] = data.value;
     }
-    let box = ref(null);
+    let box = ref(null)
     function submitForm() {
       box.value.validate((valid) => {
         if (valid) {

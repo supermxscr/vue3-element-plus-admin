@@ -5,7 +5,7 @@
       @click="rotate"
     />
     <div class="username">
-      {{ state.username }}
+      {{ state.userInfo.company }}
     </div>
     <el-dropdown
       class="dropdown"
@@ -15,7 +15,7 @@
           :underline="false"
           disabled
         >
-          {{ state.username }}
+          {{ state.userInfo.username }}
           <i class="el-icon-arrow-down el-icon--right" />
         </el-link>
       </span>
@@ -38,7 +38,7 @@
     </el-dropdown>
     <img
       class="avatar"
-      :src="require(`@/static/images/avatar/${state.avatar}.png`)"
+      :src="require(`@/static/images/avatar/${state.userInfo.avatar}.png`)"
       fit="cover"
       @click="jumpPage('/member-center')"
     >
@@ -54,8 +54,7 @@ export default {
   setup(){
     const store = useStore()
     let state = reactive({
-      avatar: store.state.userInfo.avatar,
-      username: store.state.userInfo.username,
+      userInfo: store.state.userInfo,
       isCollapse: store.state.navMenuCollapse
     }) 
     return {
@@ -72,7 +71,7 @@ export default {
       this.isCollapse = val
     },
     '$store.state.userInfo'(val) {
-      this.state.avatar = val.avatar
+      this.state.userInfo = val
     }
   },
   methods:{

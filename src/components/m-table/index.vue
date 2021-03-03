@@ -9,6 +9,7 @@
         empty-text="暂无数据"
         size="mini"
         fit
+        border
       >
         <el-table-column
           align="center"
@@ -59,10 +60,14 @@ export default {
       type:Array,
       default: ()=>[]
     },
+    cutHeight:{
+      type: Number,
+      default: 300
+    },
   },
   setup(props,context){
     let state = reactive({
-      height: window.innerHeight - 300
+      height: window.innerHeight - props.cutHeight
     })
     function pagination(data){
       context.emit('pagination',data)

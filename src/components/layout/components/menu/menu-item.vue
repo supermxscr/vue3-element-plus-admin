@@ -64,6 +64,7 @@
 
 <script>
 import { routerPush } from '@/utils'
+
 export default {
   name: "MenuItem",
   components: {},
@@ -85,22 +86,19 @@ export default {
   },
   methods: {
     handleItem(route){
-      if (route.children){
-        routerPush(route.children[0].path)
-        this.$store.commit('setTagsViews',route.children[0])
-      }else {
-        routerPush(route.path)
-        this.$store.commit('setTagsViews',route)
-      }
+      routerPush(route.path)
+      this.$store.commit('setTagsViews',route)
     },
     hasOneShowingChild(children = [], parent) {
       const showingChildren = children.filter((item) => {
-        if (item.hidden) {
-          return false
-        } else {
-          this.onlyOneChild = item
-          return true
-        }
+        // if (item.hidden) {
+        //   return false
+        // } else {
+        //   this.onlyOneChild = item
+        //   return true
+        // }
+        this.onlyOneChild = item
+        return true
       })
       if (showingChildren.length === 1) {
         return true
